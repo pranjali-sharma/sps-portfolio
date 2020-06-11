@@ -26,3 +26,14 @@ function addRandomGreeting() {
   const greetingContainer = document.getElementById('greeting-container');
   greetingContainer.innerText = greeting;
 }
+
+/**
+ * Fetches random quote from the server
+ * Currently just gets a hardcoded message from the server
+ * TODO(psharma): Update this method to use Lambdas.
+ */
+function getRandomQuote() {
+  fetch('/data').then(response => response.text()).then((quote) => {
+    document.getElementById('quote-container').innerText = quote;
+  });
+}
