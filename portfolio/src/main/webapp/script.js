@@ -28,12 +28,26 @@ function addRandomGreeting() {
 }
 
 /**
- * Fetches random quote from the server
- * Currently just gets a hardcoded message from the server
+ * Fetches random quote from the server.
+ * Currently just gets a hardcoded message from the server.
  * TODO(psharma): Update this method to use Lambdas.
  */
 function getRandomQuote() {
-  fetch('/data').then(response => response.text()).then((quote) => {
-    document.getElementById('quote-container').innerText = quote;
+    console.log("inside getrandomquote");
+  fetch('/data').then(response => response.json()).then((quote) => {
+      console.log(quote)
+    const arrayListElement = document.getElementById('quote-container');
+    arrayListElement.innerHTML = '';
+    arrayListElement.appendChild(
+        createListElement('Comment: ' + quote[0]));
   });
 }
+
+/** Creates an <li> element containing text. */
+function createListElement(text) {
+  const liElement = document.createElement('li');
+  liElement.innerText = text;
+  return liElement;
+}
+
+

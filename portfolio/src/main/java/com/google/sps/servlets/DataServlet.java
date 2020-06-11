@@ -14,6 +14,8 @@
 
 package com.google.sps.servlets;
 
+import java.util.*;
+import com.google.gson.Gson;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,12 +25,30 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+   
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String quote="Hello Pranjali!";
-   
-    response.setContentType("text/html;");
+    //Create ArrayList<String> object
+    ArrayList<String> list= new ArrayList<String>();   
+    list.add("And I knew exactly what to do. But in a much more real sense, I had no idea what to do.- Michael G. Scott");
+    list.add("It is a capital mistake to theorize before one has data. Insensibly one begins to twist facts to suit theories, instead of theories to suit facts.- Sherlock Holmes");
+    list.add("When you are backed against the wall, break the goddamn thing down.- Harvey Specter");
+    list.add("Never forget what you are. The rest of the world will not. Wear it like armor, and it can never be used to hurt you.- Tyrion Lannister");
+    //Convert object to JSON
+    String quote=convertToJsonUsingGson(list);
+    System.out.println(quote);
+    response.setContentType("application/json;");
     response.getWriter().println(quote);
+  }
+
+/**
+   * Converts a ServerStats instance into a JSON string using the Gson library. Note: We first added
+   * the Gson library dependency to pom.xml.
+   */
+  private String convertToJsonUsingGson(ArrayList<String> list) {
+    Gson gson = new Gson();
+    String json = gson.toJson(list);
+    return json;
   }
 }
