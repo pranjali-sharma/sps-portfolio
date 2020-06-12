@@ -37,9 +37,8 @@ public class DataServlet extends HttpServlet {
         "When you are backed against the wall, break the goddamn thing down.- Harvey Specter");
     quotes.add(
         "Never forget what you are. The rest of the world will not. Wear it like armor, and it can never be used to hurt you.- Tyrion Lannister");
-    List<String> quotesList = new ArrayList<String>(quotes);
     response.setContentType("application/json;");
-    response.getWriter().println(convertToJsonUsingGson(quotesList));
+    response.getWriter().println(convertToJsonUsingGson(quotes));
   }
 
   /**
