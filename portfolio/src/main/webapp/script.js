@@ -17,13 +17,15 @@
  * Currently just gets a hardcoded message from the server.
  * TODO(psharma): Update this method to use Lambdas.
  */
-function getRandomQuote() {
-  console.log('inside getrandomquote');
-  fetch('/data').then(response => response.json()).then((quote) => {
-    console.log(quote)
-    const quoteContainerElement = document.getElementById('quote-container');
-    quoteContainerElement.appendChild(
-        createListElement('Comment: ' + quote[0]));
+function getComments() {
+  console.log('inside getComments()');
+  fetch('/data').then(response => response.json()).then((comments) => {
+    console.log(comments)
+    // Build the list of comments.
+    const commentsEl = document.getElementById('history');
+    comments.forEach((line) => {
+      commentsEl.appendChild(createListElement(line));
+    });
   });
 }
 
