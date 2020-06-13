@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body>
+  <body onload="getComments()">
     <div id="content">
       <h1>Pranjali Sharma</h1>
       <div id="about">
@@ -70,10 +70,23 @@
         </div>
         
         <p>Click <a href="gallery.html">here</a> to see my gallery!</p>
+        
+    <div id= "comments">
 
-      <p>Click here to get a tv show reference:</p>
-      <button onclick="getRandomQuote()">Fetch a message!</button>
-      <div id="quote-container"></div>
+      <form action="/data" method="POST">
+
+        <p>Enter a comment:</p>
+        <textarea name="text-input">Comment here!</textarea>
+        <br/><br/>
+
+        <input type="submit" />
+
+      </form>
+    
+    <p> Previous Comments</p>
+        <ul id="history"></ul>
+    </div>
+
     </div>
   </body>
 </html>
