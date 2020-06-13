@@ -21,10 +21,10 @@ function getComments() {
   console.log('inside getComments()');
   fetch('/data').then(response => response.json()).then((comments) => {
     console.log(comments)
-    // Build the list of history entries.
-    const historyEl = document.getElementById('history');
+    // Build the list of comments.
+    const commentsEl = document.getElementById('history');
     comments.forEach((line) => {
-      historyEl.appendChild(createListElement(line));
+      commentsEl.appendChild(createListElement(line));
     });
   });
 }
