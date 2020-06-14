@@ -19,14 +19,16 @@
  */
 function getComments() {
   console.log('inside getComments()');
-  fetch('/data').then(response => response.json()).then((comments) => {
-    console.log(comments)
-    // Build the list of comments.
-    const commentsEl = document.getElementById('history');
-    comments.forEach((line) => {
-      commentsEl.appendChild(createListElement(line));
-    });
-  });
+  fetch('/data', {method: 'GET'})
+      .then(response => response.json())
+      .then((comments) => {
+        console.log(comments)
+        // Build the list of comments.
+        const commentsEl = document.getElementById('history');
+        comments.forEach((line) => {
+          commentsEl.appendChild(createListElement(line));
+        });
+      });
 }
 
 /** Creates an <li> element containing text. */
