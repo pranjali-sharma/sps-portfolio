@@ -51,6 +51,7 @@ public class DataServlet extends HttpServlet {
     for (Entity entity : results.asIterable()) {
       String text = (String) entity.getProperty("text");
       comments.add(text);
+      System.out.println("doGet comments:" + text);
     }
     return comments;
   }
@@ -71,6 +72,7 @@ public class DataServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
+    System.out.println("doPost comment:" + text + "put successful");
   }
 
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
