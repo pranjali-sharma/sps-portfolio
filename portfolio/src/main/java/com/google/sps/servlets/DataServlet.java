@@ -34,16 +34,8 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(query);
-
     List<String> comments = new ArrayList<>();
-
-    for (Entity entity : results.asIterable()) {
-      String text = (String) entity.getProperty("comment");
-      comments.add(text);
-    }
+    comments = readFromDatastore(comments);
 
     Gson gson = new Gson();
 
@@ -51,20 +43,34 @@ public class DataServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(comments));
   }
 
+  private List<String> readFromDatastore(List<String> comments) {
+    Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    PreparedQuery results = datastore.prepare(query);
+
+    for (Entity entity : results.asIterable()) {
+      String text = (String) entity.getProperty("text");
+      comments.add(text);
+    }
+    return comments;
+  }
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the input from the form.
     String text = getParameter(request, "text-input", "");
     long timestamp = System.currentTimeMillis();
+    writeToDatastore(text, timestamp);
+    response.sendRedirect("/index.html");
+  }
 
+  private void writeToDatastore(String text, long timestamp) {
     Entity commentEntity = new Entity("Comment");
-    commentEntity.setProperty("comment", text);
+    commentEntity.setProperty("text", text);
     commentEntity.setProperty("timestamp", timestamp);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
-
-    response.sendRedirect("/index.html");
   }
 
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {

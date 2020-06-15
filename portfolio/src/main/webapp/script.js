@@ -19,9 +19,7 @@
  */
 function getComments() {
   console.log('inside getComments()');
-  fetch('/data', {method: 'GET'})
-      .then(response => response.json())
-      .then((comments) => {
+  fetch('/data').then(response => response.json()).then((comments) => {
         console.log(comments)
         // Build the list of comments.
         const commentsEl = document.getElementById('history');
