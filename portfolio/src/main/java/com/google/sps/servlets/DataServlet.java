@@ -34,8 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<String> comments = new ArrayList<>();
-    comments = readFromDatastore(comments);
+    List<String> comments = readFromDatastore();
 
     Gson gson = new Gson();
 
@@ -43,7 +42,8 @@ public class DataServlet extends HttpServlet {
     response.getWriter().println(gson.toJson(comments));
   }
 
-  private List<String> readFromDatastore(List<String> comments) {
+  private List<String> readFromDatastore() {
+    List<String> comments = new ArrayList<>();
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
@@ -51,7 +51,6 @@ public class DataServlet extends HttpServlet {
     for (Entity entity : results.asIterable()) {
       String text = (String) entity.getProperty("text");
       comments.add(text);
-      System.out.println("doGet comments:" + text);
     }
     return comments;
   }
@@ -72,7 +71,6 @@ public class DataServlet extends HttpServlet {
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
-    System.out.println("doPost comment:" + text + "put successful");
   }
 
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
