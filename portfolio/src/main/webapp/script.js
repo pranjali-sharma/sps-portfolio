@@ -35,3 +35,24 @@ function createListElement(text) {
   liElement.innerText = text;
   return liElement;
 }
+
+/** Gets login status */
+async function getLogin() {
+  getComments();
+  // hide comments
+  document.getElementById('comments-form').style.display = 'none';
+
+  // fetch login status from servlet
+  const response = await fetch('/login');
+  const loggedIn = await response.text();
+
+  if (loggedIn) {
+    // unhide comments
+    document.getElementById('comments-form').style.display = 'block';
+
+  } else {
+    const linkContainer = document.getElementById('login-link');
+    linkContainer.innerHTML = loggedIn;
+    // display login link
+  }
+}

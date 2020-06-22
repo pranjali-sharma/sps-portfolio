@@ -17,18 +17,11 @@ public class LoginServlet extends HttpServlet {
     response.setContentType("text/html");
     UserService userService = UserServiceFactory.getUserService();
     if (userService.isUserLoggedIn()) {
-      System.out.println("Logged in");
       String userEmail = userService.getCurrentUser().getEmail();
-      String logoutUrl = userService.createLogoutURL(URL_TO_REDIRECT);
-
-      response.getWriter().println("<p> " + userEmail + " is logged in!</p>");
-      response.getWriter().println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
+      response.getWriter().println(userService.isUserLoggedIn());
     } else {
-      System.out.println("Not Logged in");
-      String loginUrl = userService.createLoginURL(URL_TO_REDIRECT);
-
-      response.getWriter().println("<p>Not logged in.</p>");
-      response.getWriter().println("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
+      String loginLink = userService.createLoginURL(URL_TO_REDIRECT);
+      response.getWriter().println("<p>Login <a href=\"" + loginLink + "\">here</a>.</p>");
     }
   }
 }
