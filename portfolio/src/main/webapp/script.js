@@ -19,20 +19,22 @@
  */
 function getComments() {
   console.log('inside getComments()');
-  fetch('/data').then(response => response.json()).then((comments) => {
-    console.log(comments)
-    // Build the list of comments.
+  fetch('/data').then(response => response.json()).then((json) => {
+    console.log(json);
+    const comments = json.comments;
+    console.log(comments);
     const commentsEl = document.getElementById('history');
-    comments.forEach((line) => {
-      commentsEl.appendChild(createListElement(line));
-    });
+    for (let i = 0; i < comments.length; i++) {
+      commentsEl.appendChild(
+          createListElement(comments[i].text, comments[i].userEmail));
+    }
   });
 }
 
 /** Creates an <li> element containing text. */
-function createListElement(text) {
+function createListElement(text, userEmail) {
   const liElement = document.createElement('li');
-  liElement.innerText = text;
+  liElement.innerText = '[' + userEmail + ']:' + text;
   return liElement;
 }
 
