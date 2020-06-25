@@ -12,16 +12,30 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginServlet extends HttpServlet {
   private final static String URL_TO_REDIRECT = "/";
 
+  UserService userService = UserServiceFactory.getUserService();
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html");
-    UserService userService = UserServiceFactory.getUserService();
-    if (userService.isUserLoggedIn()) {
+    response.setContentType("application/json;");
+    String json = getInfoAsJson();
+    response.getWriter().println(json);
+  }
+
+  private String getInfoAsJson() {
+    boolean loggedIn = userService.isUserLoggedIn();
+    String json = "{ \"loggedIn\": " + loggedIn;
+    if (loggedIn) {
       String userEmail = userService.getCurrentUser().getEmail();
-      response.getWriter().println(userService.isUserLoggedIn());
+      System.out.println("Logged in user is " + userEmail);
+      json += ", \"userEmail\": \"" + userEmail + "\"";
+      String logoutUrl = userService.createLogoutURL(URL_TO_REDIRECT);
+      json += ", \"logoutUrl\": \"" + logoutUrl + "\"";
     } else {
-      String loginLink = userService.createLoginURL(URL_TO_REDIRECT);
-      response.getWriter().println("<p>Login <a href=\"" + loginLink + "\">here</a>.</p>");
+      System.out.println("Loggedout");
+      String loginUrl = userService.createLoginURL(URL_TO_REDIRECT);
+      json += ", \"loginUrl\":\"" + loginUrl + "\"";
     }
+    json += "}";
+    return json;
   }
 }

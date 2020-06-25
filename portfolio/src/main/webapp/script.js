@@ -37,22 +37,34 @@ function createListElement(text) {
 }
 
 /** Gets login status */
-async function getLogin() {
+function getLogin() {
   getComments();
   // hide comments
-  document.getElementById('comments-form').style.display = 'none';
 
   // fetch login status from servlet
-  const response = await fetch('/login');
-  const loggedIn = await response.text();
+  fetch('/login').then(response => response.json()).then((json) => {
+    console.log('json from /login is ' + json);
+    if (json.loggedIn) {
+      console.log('logged in');
+      displayElementWithId('comments-form', true);
+      const linkContainer = document.getElementById('login-logout');
+      linkContainer.href = json.logoutUrl;
+      linkContainer.innerText = 'logout';
+    }
 
-  if (loggedIn) {
-    // unhide comments
-    document.getElementById('comments-form').style.display = 'block';
+    else {
+      console.log('loggedout');
+      const linkContainer = document.getElementById('login-logout');
+      linkContainer.href = json.loginUrl;
+      linkContainer.innerText = 'login';
+      displayElementWithId('comments-form', false);
+    }
+  });
+}
 
-  } else {
-    const linkContainer = document.getElementById('login-link');
-    linkContainer.innerHTML = loggedIn;
-    // display login link
-  }
+function displayElementWithId(elementId, show) {
+  if (show)
+    document.getElementById(elementId).style.display = 'block';
+  else
+    document.getElementById(elementId).style.display = 'none';
 }
