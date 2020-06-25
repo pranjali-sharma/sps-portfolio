@@ -35,3 +35,37 @@ function createListElement(text) {
   liElement.innerText = text;
   return liElement;
 }
+
+/** Gets login status */
+function getLogin() {
+  // fetch login status from servlet
+  fetch('/login').then(response => response.json()).then((json) => {
+    console.log('json from /login is ' + json);
+    if (json.loggedIn) {
+      console.log('logged in');
+      getComments();
+      displayElementWithId('comments-form', true);
+      displayElementWithId('history', true);
+      const linkContainer = document.getElementById('login-logout');
+      linkContainer.href = json.logoutUrl;
+      linkContainer.innerText = 'logout';
+    }
+
+    else {
+      console.log('loggedout');
+      const linkContainer = document.getElementById('login-logout');
+      linkContainer.href = json.loginUrl;
+      linkContainer.innerText = 'login';
+      displayElementWithId('comments-form', false);
+      displayElementWithId('history', false);
+    }
+  });
+}
+
+function displayElementWithId(elementId, show) {
+  if (show) {
+    document.getElementById(elementId).style.display = 'block';
+  } else {
+    document.getElementById(elementId).style.display = 'none';
+  }
+}
