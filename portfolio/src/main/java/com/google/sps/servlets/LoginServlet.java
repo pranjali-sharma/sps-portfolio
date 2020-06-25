@@ -17,11 +17,11 @@ public class LoginServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json;");
-    String json = getInfoAsJson();
+    String json = getLoginInfoAsJson();
     response.getWriter().println(json);
   }
 
-  private String getInfoAsJson() {
+  private String getLoginInfoAsJson() {
     boolean loggedIn = userService.isUserLoggedIn();
     String json = "{ \"loggedIn\": " + loggedIn;
     if (loggedIn) {

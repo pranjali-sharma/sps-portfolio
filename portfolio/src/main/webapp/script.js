@@ -38,15 +38,14 @@ function createListElement(text) {
 
 /** Gets login status */
 function getLogin() {
-  getComments();
-  // hide comments
-
   // fetch login status from servlet
   fetch('/login').then(response => response.json()).then((json) => {
     console.log('json from /login is ' + json);
     if (json.loggedIn) {
       console.log('logged in');
+      getComments();
       displayElementWithId('comments-form', true);
+      displayElementWithId('history', true);
       const linkContainer = document.getElementById('login-logout');
       linkContainer.href = json.logoutUrl;
       linkContainer.innerText = 'logout';
@@ -58,13 +57,15 @@ function getLogin() {
       linkContainer.href = json.loginUrl;
       linkContainer.innerText = 'login';
       displayElementWithId('comments-form', false);
+      displayElementWithId('history', false);
     }
   });
 }
 
 function displayElementWithId(elementId, show) {
-  if (show)
+  if (show) {
     document.getElementById(elementId).style.display = 'block';
-  else
+  } else {
     document.getElementById(elementId).style.display = 'none';
+  }
 }
