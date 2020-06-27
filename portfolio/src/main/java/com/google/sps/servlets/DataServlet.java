@@ -20,6 +20,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,43 +36,47 @@ import javax.servlet.http.HttpServletResponse;
 public class DataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    List<String> comments = readFromDatastore();
-
-    Gson gson = new Gson();
-
+    String json = readFromDatastore();
     response.setContentType("application/json;");
-    response.getWriter().println(gson.toJson(comments));
+    response.getWriter().println(json);
   }
 
-  private List<String> readFromDatastore() {
-    List<String> comments = new ArrayList<>();
+  private String readFromDatastore() {
     Query query = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     PreparedQuery results = datastore.prepare(query);
 
-    for (Entity entity : results.asIterable()) {
-      String text = (String) entity.getProperty("text");
-      comments.add(text);
+    String json = "{ \"comments\": [";
+    for (Entity comment : results.asIterable()) {
+      json += "{\"userEmail\": \"" + comment.getProperty("userEmail") + "\", \"text\": \""
+          + comment.getProperty("text") + "\"},";
     }
-    return comments;
+    json = json.substring(0, json.length() - 1);
+    json += "]}";
+    return json;
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     // Get the input from the form.
+    UserService userService = UserServiceFactory.getUserService();
+    String userEmail = userService.getCurrentUser().getEmail();
+    System.out.println("current useremail- " + userEmail);
     String text = getParameter(request, "text-input", "");
     long timestamp = System.currentTimeMillis();
-    writeToDatastore(text, timestamp);
+    writeToDatastore(text, userEmail, timestamp);
     response.sendRedirect("/index.html");
   }
 
-  private void writeToDatastore(String text, long timestamp) {
+  private void writeToDatastore(String text, String userEmail, long timestamp) {
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("text", text);
+    commentEntity.setProperty("userEmail", userEmail);
     commentEntity.setProperty("timestamp", timestamp);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(commentEntity);
+    System.out.println("current useremail- " + userEmail + " put in datastore");
   }
 
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {
